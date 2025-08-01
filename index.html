@@ -1,0 +1,472 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Difference Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS variables for theming */
+        :root {
+            --background-color-dark: #1a1c1e;
+            --surface-color-dark: #2f3033;
+            --primary-color-dark: #7abfff;
+            --on-primary-color-dark: #003259;
+            --text-color-dark: #e2e2e5;
+            --text-color-secondary-dark: #c2c6ce;
+            --border-color-dark: #45474a;
+            --error-color-dark: #ffb4ab;
+            --header-background-dark: #3a3c3f;
+            --breakdown-dhm-color-dark: rgba(122, 191, 255, 0.1);
+            --breakdown-hm-color-dark: rgba(255, 179, 0, 0.15);
+            /* UPDATED: New color for the Y-M breakdown */
+            --breakdown-ym-color-dark: rgba(67, 201, 154, 0.15);
+
+            --background-color-light: #f8f9fa;
+            --surface-color-light: #ffffff;
+            --primary-color-light: #0061a8;
+            --on-primary-color-light: #ffffff;
+            --text-color-light: #1a1c1e;
+            --text-color-secondary-light: #5f6368;
+            --border-color-light: #cccccc;
+            --error-color-light: #d32f2f;
+            --header-background-light: #e9eef6;
+            --breakdown-dhm-color-light: rgba(0, 97, 168, 0.08);
+            --breakdown-hm-color-light: rgba(255, 152, 0, 0.1);
+            /* UPDATED: New color for the Y-M breakdown */
+            --breakdown-ym-color-light: rgba(46, 139, 87, 0.1);
+        }
+
+        /* Applying the theme using data attributes */
+        [data-theme="dark"] {
+            --background-color: var(--background-color-dark);
+            --surface-color: var(--surface-color-dark);
+            --primary-color: var(--primary-color-dark);
+            --on-primary-color: var(--on-primary-color-dark);
+            --text-color: var(--text-color-dark);
+            --text-color-secondary: var(--text-color-secondary-dark);
+            --border-color: var(--border-color-dark);
+            --error-color: var(--error-color-dark);
+            --header-background: var(--header-background-dark);
+            --breakdown-dhm-color: var(--breakdown-dhm-color-dark);
+            --breakdown-hm-color: var(--breakdown-hm-color-dark);
+            --breakdown-ym-color: var(--breakdown-ym-color-dark);
+        }
+
+        [data-theme="light"] {
+            --background-color: var(--background-color-light);
+            --surface-color: var(--surface-color-light);
+            --primary-color: var(--primary-color-light);
+            --on-primary-color: var(--on-primary-color-light);
+            --text-color: var(--text-color-light);
+            --text-color-secondary: var(--text-color-secondary-light);
+            --border-color: var(--border-color-light);
+            --error-color: var(--error-color-light);
+            --header-background: var(--header-background-light);
+            --breakdown-dhm-color: var(--breakdown-dhm-color-light);
+            --breakdown-hm-color: var(--breakdown-hm-color-light);
+            --breakdown-ym-color: var(--breakdown-ym-color-light);
+        }
+
+        body {
+            background-color: var(--background-color);
+            font-family: 'Roboto', sans-serif;
+            color: var(--text-color);
+            margin: 0;
+            padding: 1rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px; /* Adjusted max-width for new columns */
+            margin: 20px auto;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 500;
+            margin: 0;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .theme-switcher {
+            display: flex;
+            background-color: var(--surface-color);
+            border-radius: 24px;
+            padding: 4px;
+        }
+
+        .theme-switcher button {
+            background-color: transparent;
+            color: var(--text-color-secondary);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .theme-switcher button.active {
+            background-color: var(--primary-color);
+            color: var(--on-primary-color);
+        }
+
+        .calculator-wrapper {
+            max-width: 1400px; /* Adjusted max-width for new columns */
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .add-row-btn {
+            background-color: var(--primary-color);
+            color: var(--on-primary-color);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .add-row-btn:hover {
+            opacity: 0.9;
+        }
+
+        .button-container {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid var(--border-color);
+            transition: border-color 0.3s ease;
+        }
+
+        th,
+        td {
+            border: 1px solid var(--border-color);
+            text-align: center;
+            vertical-align: middle;
+            padding: 12px;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        th {
+            background-color: var(--header-background);
+            font-weight: 500;
+            color: var(--text-color-secondary);
+            font-size: 0.9rem;
+        }
+
+        td {
+            background-color: var(--surface-color);
+        }
+        
+        .breakdown-ym-cell {
+            background-color: var(--breakdown-ym-color) !important;
+        }
+
+        .breakdown-dhm-cell {
+            background-color: var(--breakdown-dhm-color) !important;
+        }
+
+        .breakdown-hm-cell {
+            background-color: var(--breakdown-hm-color) !important;
+        }
+
+        /* Style for inputs */
+        input[type="number"],
+        input[type="text"],
+        input[type="tel"] {
+            width: 100%;
+            min-width: 80px;
+            background-color: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 8px;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            text-align: center;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        input[type="text"]::placeholder,
+        input[type="number"]::placeholder,
+        input[type="tel"]::placeholder {
+            color: var(--text-color-secondary);
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="tel"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+
+        input.invalid {
+            border-color: var(--error-color);
+        }
+
+        input.invalid:focus {
+            box-shadow: 0 0 0 2px var(--error-color);
+        }
+
+        #tableBody .row-number,
+        .result-value {
+            font-weight: 500;
+        }
+
+        .result-value {
+            font-size: 1.1rem;
+        }
+    </style>
+    <script>
+        let rowCount = 0;
+
+        function setTheme(theme) {
+            let effectiveTheme = theme;
+            if (theme === 'auto') {
+                const hour = new Date().getHours();
+                effectiveTheme = (hour >= 6 && hour < 18) ? 'light' : 'dark';
+            }
+            document.documentElement.setAttribute('data-theme', effectiveTheme);
+            localStorage.setItem('calculatorTheme', theme);
+            document.querySelectorAll('.theme-switcher button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.theme-switcher button[data-theme='${theme}']`).classList.add('active');
+        }
+
+        function validateInput(input, fieldName, row) {
+            let isValid = true;
+            const element = document.getElementById(fieldName + row);
+
+            if ((fieldName === "startDate" || fieldName === "endDate") && input === "") {
+                element.classList.remove("invalid");
+                return true;
+            }
+            if (fieldName === "startTime" || fieldName === "endTime") {
+                if (input === "" || /^\d+$/.test(input) === false) {
+                    isValid = false;
+                } else {
+                    const timeStr = input.padStart(4, '0');
+                    const hours = parseInt(timeStr.substring(0, 2), 10);
+                    const minutes = parseInt(timeStr.substring(2, 4), 10);
+                    isValid = (hours >= 0 && hours < 24 && minutes >= 0 && minutes < 60);
+                }
+            } else if (fieldName === "startDate" || fieldName === "endDate") {
+                isValid = /^\d{2}[A-Za-z]{3}(\d{2})?$/.test(input);
+            } else { // For differenceInDays
+                isValid = /^\d*$/.test(input);
+            }
+
+            if (isValid) {
+                element.classList.remove("invalid");
+            } else {
+                element.classList.add("invalid");
+            }
+            return isValid;
+        }
+
+        function calculateTime(row) {
+            const startTimeInput = document.getElementById("startTime" + row).value;
+            const endTimeInput = document.getElementById("endTime" + row).value;
+            const differenceInDays = document.getElementById("differenceInDays" + row).value;
+            const startDate = document.getElementById("startDate" + row).value.toLowerCase();
+            const endDate = document.getElementById("endDate" + row).value.toLowerCase();
+
+            const isValidStartTime = validateInput(startTimeInput, "startTime", row);
+            const isValidEndTime = validateInput(endTimeInput, "endTime", row);
+            const isValidDifferenceInDays = validateInput(differenceInDays, "differenceInDays", row);
+            const isValidStartDate = validateInput(startDate, "startDate", row);
+            const isValidEndDate = validateInput(endDate, "endDate", row);
+
+            if (!isValidStartTime || !isValidEndTime || (!isValidDifferenceInDays && (!isValidStartDate || !isValidEndDate)) || (startDate && !isValidStartDate) || (endDate && !isValidEndDate)) {
+                document.getElementById("totalYears" + row).innerText = "---";
+                document.getElementById("totalMonths" + row).innerText = "---";
+                document.getElementById("totalDays_dhm" + row).innerText = "---";
+                document.getElementById("totalHours_dhm" + row).innerText = "---";
+                document.getElementById("totalMinutes_dhm" + row).innerText = "---";
+                document.getElementById("totalHours_hm" + row).innerText = "---";
+                document.getElementById("totalMinutes_hm" + row).innerText = "---";
+                return;
+            }
+
+            const startTime = startTimeInput.padStart(4, '0');
+            const endTime = endTimeInput.padStart(4, '0');
+            const startHours = parseInt(startTime.substring(0, 2));
+            const startMinutes = parseInt(startTime.substring(2, 4));
+            const endHours = parseInt(endTime.substring(0, 2));
+            const endMinutes = parseInt(endTime.substring(2, 4));
+
+            // --- New Years & Months Calculation ---
+            if (startDate && endDate && isValidStartDate && isValidEndDate) {
+                const currentYear = new Date().getFullYear();
+                const startYearText = startDate.length === 5 ? currentYear : "20" + startDate.slice(5);
+                const startDateTime = new Date(`${startDate.slice(2, 5)} ${startDate.slice(0, 2)}, ${startYearText}`);
+                startDateTime.setHours(startHours, startMinutes);
+
+                const endYearText = endDate.length === 5 ? currentYear : "20" + endDate.slice(5);
+                const endDateTime = new Date(`${endDate.slice(2, 5)} ${endDate.slice(0, 2)}, ${endYearText}`);
+                endDateTime.setHours(endHours, endMinutes);
+
+                if (endDateTime < startDateTime) {
+                    document.getElementById("totalYears" + row).innerText = 0;
+                    document.getElementById("totalMonths" + row).innerText = 0;
+                } else {
+                    let years = endDateTime.getFullYear() - startDateTime.getFullYear();
+                    let months = endDateTime.getMonth() - startDateTime.getMonth();
+                    let days = endDateTime.getDate() - startDateTime.getDate();
+                    let hours = endDateTime.getHours() - startDateTime.getHours();
+                    let minutes = endDateTime.getMinutes() - startDateTime.getMinutes();
+
+                    if (minutes < 0) { hours--; }
+                    if (hours < 0) { days--; }
+                    if (days < 0) { months--; }
+                    if (months < 0) { months += 12; years--; }
+
+                    document.getElementById("totalYears" + row).innerText = years;
+                    document.getElementById("totalMonths" + row).innerText = months;
+                }
+            } else {
+                document.getElementById("totalYears" + row).innerText = "---";
+                document.getElementById("totalMonths" + row).innerText = "---";
+            }
+
+            // --- Original D-H-M and H-M Calculation ---
+            let daysForTotalMinutes = 0;
+            if (startDate && endDate && isValidStartDate && isValidEndDate) {
+                const currentYear = new Date().getFullYear();
+                const startYear = startDate.length === 5 ? currentYear : "20" + startDate.slice(5);
+                const start = new Date(`${startDate.slice(2, 5)} ${startDate.slice(0, 2)}, ${startYear}`);
+                const endYear = endDate.length === 5 ? currentYear : "20" + endDate.slice(5);
+                const end = new Date(`${endDate.slice(2, 5)} ${endDate.slice(0, 2)}, ${endYear}`);
+                daysForTotalMinutes = Math.floor((end - start) / (1000 * 60 * 60 * 24));
+            } else if (differenceInDays !== "") {
+                daysForTotalMinutes = parseInt(differenceInDays);
+            }
+
+            const totalStartMinutes = startHours * 60 + startMinutes;
+            const totalEndMinutes = endHours * 60 + endMinutes;
+            const totalMinutes = (daysForTotalMinutes * 24 * 60) + (totalEndMinutes - totalStartMinutes);
+
+            const resultDays_dhm = Math.floor(totalMinutes / 1440);
+            const resultHours_dhm = Math.floor((totalMinutes % 1440) / 60);
+            const resultMinutes_dhm = totalMinutes % 60;
+
+            const resultHours_hm = Math.floor(totalMinutes / 60);
+            const resultMinutes_hm = totalMinutes % 60;
+
+            document.getElementById("totalDays_dhm" + row).innerText = resultDays_dhm;
+            document.getElementById("totalHours_dhm" + row).innerText = resultHours_dhm;
+            document.getElementById("totalMinutes_dhm" + row).innerText = resultMinutes_dhm;
+
+            document.getElementById("totalHours_hm" + row).innerText = resultHours_hm;
+            document.getElementById("totalMinutes_hm" + row).innerText = resultMinutes_hm;
+        }
+
+        function addRow() {
+            rowCount++;
+            const tableBody = document.getElementById('tableBody');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td class="row-number">${rowCount}</td>
+                <td><input type="tel" id="startTime${rowCount}" placeholder="HHMM" oninput="this.value = this.value.replace(/[^0-9]/g, ''); calculateTime(${rowCount})" onfocus="this.select()" value="0000" maxlength="4"></td>
+                <td><input type="tel" id="endTime${rowCount}" placeholder="HHMM" oninput="this.value = this.value.replace(/[^0-9]/g, ''); calculateTime(${rowCount})" onfocus="this.select()" value="0000" maxlength="4"></td>
+                <td><input type="number" id="differenceInDays${rowCount}" placeholder="Days" oninput="calculateTime(${rowCount})" onfocus="this.select()" value="0"></td>
+                <td><input type="text" id="startDate${rowCount}" placeholder="DDMMM or DDMMMYY" oninput="calculateTime(${rowCount})" onfocus="this.select()"></td>
+                <td><input type="text" id="endDate${rowCount}" placeholder="DDMMM or DDMMMYY" oninput="calculateTime(${rowCount})" onfocus="this.select()"></td>
+                <td class="breakdown-ym-cell"><span class="result-value" id="totalYears${rowCount}"></span></td>
+                <td class="breakdown-ym-cell"><span class="result-value" id="totalMonths${rowCount}"></span></td>
+                <td class="breakdown-dhm-cell"><span class="result-value" id="totalDays_dhm${rowCount}"></span></td>
+                <td class="breakdown-dhm-cell"><span class="result-value" id="totalHours_dhm${rowCount}"></span></td>
+                <td class="breakdown-dhm-cell"><span class="result-value" id="totalMinutes_dhm${rowCount}"></span></td>
+                <td class="breakdown-hm-cell"><span class="result-value" id="totalHours_hm${rowCount}"></span></td>
+                <td class="breakdown-hm-cell"><span class="result-value" id="totalMinutes_hm${rowCount}"></span></td>
+            `;
+            tableBody.appendChild(newRow);
+            calculateTime(rowCount);
+        }
+
+        window.onload = function() {
+            document.querySelectorAll('.theme-switcher button').forEach(btn => {
+                btn.addEventListener('click', () => setTheme(btn.getAttribute('data-theme')));
+            });
+            const savedTheme = localStorage.getItem('calculatorTheme') || 'auto';
+            setTheme(savedTheme);
+            for (let i = 0; i < 10; i++) {
+                addRow();
+            }
+        };
+    </script>
+</head>
+
+<body>
+    <div class="calculator-wrapper">
+        <div class="header-container">
+            <h1>Time Difference Calculator</h1>
+            <div class="theme-switcher">
+                <button data-theme="light">Light</button>
+                <button data-theme="dark">Dark</button>
+                <button data-theme="auto">Auto</button>
+            </div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th rowspan="2">Row</th>
+                    <th rowspan="2">Start Time</th>
+                    <th rowspan="2">End Time</th>
+                    <th rowspan="2">Diff. in Days</th>
+                    <th colspan="2">
+                        Or Enter Date <br>
+                        <small>(e.g. 12Jun or 12Jun25)</small>
+                    </th>
+                    <th colspan="2" class="breakdown-ym-cell">Total Difference (Y-M)</th>
+                    <th colspan="3" class="breakdown-dhm-cell">Total Difference (D-H-M)</th>
+                    <th colspan="2" class="breakdown-hm-cell">Total Difference (H-M)</th>
+                </tr>
+                <tr>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th class="breakdown-ym-cell">Years</th>
+                    <th class="breakdown-ym-cell">Months</th>
+                    <th class="breakdown-dhm-cell">Days</th>
+                    <th class="breakdown-dhm-cell">Hours</th>
+                    <th class="breakdown-dhm-cell">Mins</th>
+                    <th class="breakdown-hm-cell">Hours</th>
+                    <th class="breakdown-hm-cell">Mins</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                </tbody>
+        </table>
+        <div class="button-container">
+            <button class="add-row-btn" onclick="addRow()">Add Row</button>
+        </div>
+    </div>
+</body>
+</html>
