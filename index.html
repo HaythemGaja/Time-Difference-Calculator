@@ -1,10 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Time Difference Calculator</title>
+    <!-- UPDATED: Added a favicon for the browser tab -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='4' y='2' width='16' height='20' rx='2' ry='2'></rect><line x1='8' y1='6' x2='16' y2='6'></line><line x1='12' y1='10' x2='12' y2='18'></line><line x1='8' y1='14' x2='16' y2='14'></line></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -22,7 +23,6 @@
             --header-background-dark: #3a3c3f;
             --breakdown-dhm-color-dark: rgba(122, 191, 255, 0.1);
             --breakdown-hm-color-dark: rgba(255, 179, 0, 0.15);
-            /* UPDATED: New color for the Y-M breakdown */
             --breakdown-ym-color-dark: rgba(67, 201, 154, 0.15);
 
             --background-color-light: #f8f9fa;
@@ -36,7 +36,6 @@
             --header-background-light: #e9eef6;
             --breakdown-dhm-color-light: rgba(0, 97, 168, 0.08);
             --breakdown-hm-color-light: rgba(255, 152, 0, 0.1);
-            /* UPDATED: New color for the Y-M breakdown */
             --breakdown-ym-color-light: rgba(46, 139, 87, 0.1);
         }
 
@@ -462,7 +461,8 @@
                 </tr>
             </thead>
             <tbody id="tableBody">
-                </tbody>
+                <!-- Table rows will be inserted here by JavaScript -->
+            </tbody>
         </table>
         <div class="button-container">
             <button class="add-row-btn" onclick="addRow()">Add Row</button>
